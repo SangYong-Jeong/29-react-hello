@@ -7,7 +7,11 @@ const user = [
   { name: '홍길만', age: 28 },
 ];
 
-// const user2 = [<li>홍길동</li>, <li>홍길순</li>, <li>홍길만</li>];
+const user2 = [<li>홍길동</li>, <li>홍길순</li>, <li>홍길만</li>];
+const user3 = ['홍길동', '홍길순', '홍길만'];
+const user4 = { name: '홍길동', age: 25 };
+const user5 = '홍길동';
+console.dir(user2);
 const el2 = (
   <div>
     {/* jsx 주석 */}
@@ -26,4 +30,10 @@ const el2 = (
   </div>
 );
 
-ReactDOM.render(el2, app);
+const el3 = (
+  <div>
+    <ul>{user5}</ul>
+  </div>
+);
+
+ReactDOM.render(el3, app);
