@@ -10,7 +10,6 @@ const Title = ({ title }) => {
 
 const Search = ({ changeInput, changeForm }) => {
   const queryRef = useRef(null);
-  const { current } = queryRef;
   const onChange = (e) => {
     changeInput(queryRef.current.value);
   };

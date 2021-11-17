@@ -1,21 +1,64 @@
 const { Component, createRef } = React;
 const { render } = ReactDOM;
 const postURL = 'https://jsonplaceholder.typicode.com/posts';
+const userURL = 'https://jsonplaceholder.typicode.com/users';
 
 class Search extends Component {
   btClose = { right: '1em', cursor: 'pointer' };
+  state = {
+    query: '',
+  };
+  queryRef = createRef();
+  onChange = (e) => {
+    // this.setState({ query: this.queryRef.current.value });
+    console.log(this);
+    this.setState({ query: e.target.value });
+    this.props.changeInput(e.target.value);
+  };
+  onClose = (e) => {
+    this.setState({ query: '' });
+    this.queryRef.current.focus();
+    this.props.changeInput('');
+  };
   render() {
     return (
       <form className="my-4 d-flex align-items-center position-relative">
         <h3 className="mr-3 font-weight-bold flex-shrink-0">검색어: </h3>
-        <input className="form-control" autoFocus />
-        <i className="fa fa-times position-absolute" style={this.btClose} />
+        <input
+          onChange={this.onChange}
+          ref={this.queryRef}
+          className="form-control"
+          autoFocus
+          placeholder="검색할 단어를 적어주세요"
+          value={this.state.query}
+        />
+        {this.state.query.length ? (
+          <i
+            className="fa fa-times position-absolute"
+            style={this.btClose}
+            onClick={this.onClose}
+          />
+        ) : (
+          ''
+        )}
       </form>
     );
   }
 }
 
 class Lists extends Component {
+  caret = { cursor: 'pointer' };
+  state = {
+    sort: 'asc',
+  };
+  onChangeDesc = (e) => {
+    this.setState({ sort: 'desc' });
+    this.props.changeSort('desc');
+  };
+  onChangeAsc = (e) => {
+    this.setState({ sort: 'asc' });
+    this.props.changeSort('asc');
+  };
   render() {
     return (
       <table className="table my-3">
@@ -27,7 +70,22 @@ class Lists extends Component {
         </colgroup>
         <thead>
           <tr>
-            <th>번호</th>
+            <th>
+              번호
+              {this.state.sort === 'asc' ? (
+                <i
+                  className="fa fa-caret-down"
+                  style={this.caret}
+                  onClick={this.onChangeDesc}
+                />
+              ) : (
+                <i
+                  className="fa fa-caret-up"
+                  style={this.caret}
+                  onClick={this.onChangeAsc}
+                />
+              )}
+            </th>
             <th>제목</th>
             <th>작성자</th>
             <th>내용</th>
@@ -49,7 +107,7 @@ class List extends Component {
       <tr>
         <td>{this.props.post.id}</td>
         <td>{this.props.post.title}</td>
-        <td>{this.props.post.userId}</td>
+        <td>{this.props.post.name}</td>
         <td>{this.props.post.body}</td>
       </tr>
     );
@@ -58,16 +116,35 @@ class List extends Component {
 
 class App extends Component {
   state = {
-    query: '',
     allPosts: [],
     searchPosts: [],
+  };
+  changeInput = (value) => {
+    this.setState({
+      searchPosts: this.state.allPosts.filter(
+        (post) => post.title.includes(value) || post.body.includes(value)
+      ),
+    });
+  };
+  changeSort = (value) => {
+    this.setState({
+      ...this.state,
+      searchPosts:
+        value === 'asc'
+          ? _.sortBy(this.state.searchPosts, 'id')
+          : _.sortBy(this.state.searchPosts, 'id').reverse(),
+    });
   };
   async componentDidMount() {
     try {
       console.log(this);
       const { data: posts } = await axios.get(postURL);
+      const { data: users } = await axios.get(userURL);
+      posts.forEach((post) => {
+        let [{ name }] = users.filter((user) => user.id === post.userId);
+        post.name = name;
+      });
       this.setState({
-        ...this.state,
         allPosts: [...posts],
         searchPosts: [...posts],
       });
@@ -76,10 +153,11 @@ class App extends Component {
     }
   }
   render() {
+    console.log(this);
     return (
       <div className="container">
-        <Search />
-        <Lists posts={this.state.searchPosts} />
+        <Search changeInput={this.changeInput} />
+        <Lists posts={this.state.searchPosts} changeSort={this.changeSort} />
       </div>
     );
   }
