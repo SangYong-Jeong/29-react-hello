@@ -6,37 +6,73 @@
 
 class List extends React.Component {
   render() {
-    return <h2 className="my-2">자식 컴포넌트 List</h2>;
+    return <h2 className="my-2">{this.props.value}</h2>;
   }
 }
 
 class Title extends React.Component {
   render() {
-    return <h1 className="fa-2x my-2">자식컴포넌트 Title</h1>;
+    return <h1 className="fa-2x my-5">{this.props.title}</h1>;
   }
 }
 
 class Search extends React.Component {
-  onChangedInput = (e) => {};
-  onSubmit = (e) => {};
+  onChangeInput = (e) => {
+    console.log(this);
+    this.props.onChangeTitle(e.target.value);
+    console.log(e.target.value);
+  };
+  onSubmit = (e) => {
+    e.preventDefault();
+    this.props.onChangeForm(e.target.query.value);
+    e.target.query.value = '';
+  };
   render() {
     return (
-      <form>
-        <input type="text" className="form-control" name="query" autofocus />
+      <form onSubmit={this.onSubmit}>
+        <input
+          onChange={this.onChangeInput}
+          type="text"
+          className="form-control"
+          name="query"
+          autoFocus
+        />
       </form>
     );
   }
 }
 
 class App extends React.Component {
-  changeTitle = () => {};
+  state = {
+    title: '',
+    lists: [],
+  };
+  changeTitle = (value) => {
+    console.log(this);
+    this.setState({
+      ...this.state,
+      title: value,
+    });
+  };
+  changeForm = (value) => {
+    console.log(this);
+    this.setState({
+      title: '',
+      lists: [...this.state.lists, value],
+    });
+  };
   render() {
     return (
       <div className="container">
-        <Title />
-        <Search />
+        <Title title={this.state.title} />
+        <Search
+          onChangeTitle={this.changeTitle}
+          onChangeForm={this.changeForm}
+        />
         <div className="my-4 border p-3">
-          <List />
+          {this.state.lists.reverse().map((v, i) => (
+            <List value={v} key={i} />
+          ))}
         </div>
       </div>
     );
