@@ -3,6 +3,10 @@ const { render } = ReactDOM;
 const postURL = 'https://jsonplaceholder.typicode.com/posts';
 const userURL = 'https://jsonplaceholder.typicode.com/users';
 
+// 해볼만 한 것들
+// 1. title 컴포넌트 만들어서 검색어 위에 붙여보기
+// 2. img들 axios로 불러와서 gallary lists 구현 해보기(이 경우 제이슨 받았다는 가정을 하기위해 추가적인 작업이 필요할듯)
+
 const Search = ({ changeInput }) => {
   const btClose = { right: '1em', cursor: 'pointer' };
   const [query, setQuery] = useState('');
