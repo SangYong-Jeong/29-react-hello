@@ -4,11 +4,14 @@ const postURL = 'https://jsonplaceholder.typicode.com/posts';
 const userURL = 'https://jsonplaceholder.typicode.com/users';
 
 class Search extends Component {
+  // css
   btClose = { right: '1em', cursor: 'pointer' };
+
+  // js
   state = {
     query: '',
   };
-  queryRef = createRef();
+  queryRef = createRef(); // v-model
   onChange = (e) => {
     // this.setState({ query: this.queryRef.current.value });
     console.log(this);
@@ -52,8 +55,8 @@ class Lists extends Component {
     sort: 'asc',
   };
   onChangeDesc = (e) => {
-    this.setState({ sort: 'desc' });
-    this.props.changeSort('desc');
+    this.setState({ sort: 'desc' }); // 내 화면 바꾸기
+    this.props.changeSort('desc'); // 데이터 바꾸기(APP에 전달)
   };
   onChangeAsc = (e) => {
     this.setState({ sort: 'asc' });

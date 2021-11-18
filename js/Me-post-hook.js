@@ -121,6 +121,8 @@ const App = () => {
     );
   };
   const changeSort = (value) => {
+    console.log(allPosts);
+    console.log(setAllPosts);
     const sortPosts =
       value === 'asc'
         ? _.sortBy(searchPosts, 'id')
@@ -129,6 +131,8 @@ const App = () => {
   };
   useEffect(async () => {
     try {
+      console.log(allPosts);
+      console.log(setAllPosts);
       const { data: posts } = await axios.get(postURL);
       const { data: users } = await axios.get(userURL);
       posts.forEach((post) => {
